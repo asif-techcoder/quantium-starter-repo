@@ -1,16 +1,11 @@
 import csv
 import os
 
-# Folder containing input CSV files
 DATA_FOLDER = "data"
-
-# Output file
 OUTPUT_FILE = "processed_sales.csv"
 
-# List to store processed rows
 processed_data = []
 
-# Loop through all CSV files in the data folder
 for file_name in os.listdir(DATA_FOLDER):
     if file_name.endswith(".csv"):
         file_path = os.path.join(DATA_FOLDER, file_name)
@@ -19,10 +14,9 @@ for file_name in os.listdir(DATA_FOLDER):
             reader = csv.DictReader(file)
 
             for row in reader:
-                # Keep only Pink Morsels
-                if row["product"] == "Pink Morsel":
+                if row["product"].strip().lower() == "pink morsel":
                     quantity = float(row["quantity"])
-                    price = float(row["price"])
+                    price = float(row["price"].replace("$", ""))
                     sales = quantity * price
 
                     processed_data.append({
@@ -31,7 +25,6 @@ for file_name in os.listdir(DATA_FOLDER):
                         "region": row["region"]
                     })
 
-# Write processed data to output CSV
 with open(OUTPUT_FILE, mode="w", newline="", encoding="utf-8") as file:
     fieldnames = ["sales", "date", "region"]
     writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -39,4 +32,4 @@ with open(OUTPUT_FILE, mode="w", newline="", encoding="utf-8") as file:
     writer.writeheader()
     writer.writerows(processed_data)
 
-print("Data processing complete. Output saved as processed_sales.csv")
+print(f"Data processing complete. Rows written: {len(processed_data)}")
